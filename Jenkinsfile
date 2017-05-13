@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Make') {
       steps {
-          sh 'make -C examples/peripheral/blinky/pca10036/blank/armgcc/'
+          sh 'make -C examples/peripheral/blinky/pca10040/blank/armgcc/'
       }
     }
     stage('Archiving') {
