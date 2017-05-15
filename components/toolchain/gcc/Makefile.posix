@@ -1,3 +1,10 @@
-GNU_INSTALL_ROOT := /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update
-GNU_VERSION := 6.3.1
-GNU_PREFIX := arm-none-eabi
+hostname := $(shell hostname)
+ifeq ($(hostname),BadrB.local)
+	GNU_INSTALL_ROOT := /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update
+	GNU_VERSION := 6.3.1
+	GNU_PREFIX := arm-none-eabi
+else
+	GNU_INSTALL_ROOT := /usr
+	GNU_VERSION := 4.9.3
+	GNU_PREFIX := arm-none-eabi
+endif
