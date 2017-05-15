@@ -1,11 +1,13 @@
 _build/nrf52832_xxaa_system_nrf52.c.o: \
  ../../../../../../components/toolchain/system_nrf52.c \
- /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h \
- /usr/include/newlib/stdint.h \
- /usr/include/newlib/machine/_default_types.h \
- /usr/include/newlib/sys/features.h /usr/include/newlib/sys/_intsup.h \
- /usr/include/newlib/sys/_stdint.h \
- /usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/stdint.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/machine/_default_types.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/features.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/_newlib_version.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/_intsup.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/_stdint.h \
+ /Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h \
  ../../../../../../components/device/nrf.h \
  ../../../../../../components/device/nrf52.h \
  ../../../../../../components/toolchain/cmsis/include/core_cm4.h \
@@ -20,19 +22,21 @@ _build/nrf52832_xxaa_system_nrf52.c.o: \
  ../../../../../../components/device/compiler_abstraction.h \
  ../../../../../../components/toolchain/system_nrf52.h
 
-/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdint.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/lib/gcc/arm-none-eabi/6.3.1/include/stdint.h:
 
-/usr/include/newlib/stdint.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/stdint.h:
 
-/usr/include/newlib/machine/_default_types.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/machine/_default_types.h:
 
-/usr/include/newlib/sys/features.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/features.h:
 
-/usr/include/newlib/sys/_intsup.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/_newlib_version.h:
 
-/usr/include/newlib/sys/_stdint.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/_intsup.h:
 
-/usr/lib/gcc/arm-none-eabi/4.9.3/include/stdbool.h:
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/arm-none-eabi/include/sys/_stdint.h:
+
+/Users/rtone-badr/Desktop/Projects/gcc-arm-none-eabi-6-2017-q1-update/lib/gcc/arm-none-eabi/6.3.1/include/stdbool.h:
 
 ../../../../../../components/device/nrf.h:
 
