@@ -9,7 +9,7 @@ pipeline {
     stage('Archiving') {
       steps {
         archiveArtifacts artifacts: 'examples/peripheral/blinky/pca10040/blank/armgcc/_build/*.hex', onlyIfSuccessful: true
-	archiveArtifacts artifacts: 'examples/peripheral/blinky/pca10040/blank/armgcc/_build/*.hex', onlyIfSuccessful: true
+	archiveArtifacts artifacts: 'examples/peripheral/blinky/pca10040/blank/armgcc/_build/*.out', onlyIfSuccessful: true
       }
     }
   }
