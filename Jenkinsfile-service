@@ -8,8 +8,8 @@ pipeline {
     }
     stage('Archiving') {
       steps {
-        archiveArtifacts artifacts: 'xamples/ble_peripheral/service_handson/pca10040/s132/armgcc/_build/*.hex', onlyIfSuccessful: true
-	archiveArtifacts artifacts: 'xamples/ble_peripheral/service_handson/pca10040/s132/armgcc/_build/*.out', onlyIfSuccessful: true
+        archiveArtifacts artifacts: 'examples/ble_peripheral/service_handson/pca10040/s132/armgcc/_build/*.hex', onlyIfSuccessful: true
+	      archiveArtifacts artifacts: 'examples/ble_peripheral/service_handson/pca10040/s132/armgcc/_build/*.out', onlyIfSuccessful: true
       }
     }
   }
