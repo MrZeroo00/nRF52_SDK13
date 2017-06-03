@@ -1,0 +1,16 @@
+pipeline {
+  agent any
+  stages {
+    stage('Make') {
+      steps {
+          sh 'make -C examples/ble_peripheral/nrf5-ble-tutorial-service/pca10040/s132/armgcc/'
+      }
+    }
+    stage('Archiving') {
+      steps {
+        archiveArtifacts artifacts: 'xamples/ble_peripheral/nrf5-ble-tutorial-service/pca10040/s132/armgcc/_build/*.hex', onlyIfSuccessful: true
+	archiveArtifacts artifacts: 'xamples/ble_peripheral/nrf5-ble-tutorial-service/pca10040/s132/armgcc/_build/*.out', onlyIfSuccessful: true
+      }
+    }
+  }
+}
