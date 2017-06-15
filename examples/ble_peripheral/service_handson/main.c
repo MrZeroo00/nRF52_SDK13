@@ -244,21 +244,6 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
-/**@brief Function for handling bsp events.
- */
-static void bsp_evt_handler(bsp_event_t evt)
-{
-    switch (evt)
-    {
-        case BSP_EVENT_KEY_0:
-            LEDS_INVERT(BSP_LED_1_MASK);
-            break;
-
-        default:
-            return; // no implementation needed
-    }
-}
-
 
 /**@brief Function for the Timer initialization.
  *
@@ -362,6 +347,9 @@ static void services_init(void)
      // Initialize CUS Service init structure to zero.
     memset(&cus_init, 0, sizeof(cus_init));
 	
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cus_init.custom_value_char_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cus_init.custom_value_char_attr_md.write_perm);
+
     err_code = ble_cus_init(&m_cus, &cus_init);
     APP_ERROR_CHECK(err_code);
 }
@@ -562,7 +550,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     }
 }
 
-
 /**@brief Function for dispatching a BLE stack event to all modules with a BLE stack event handler.
  *
  * @details This function is called from the BLE Stack event interrupt handler after a BLE stack
@@ -738,6 +725,15 @@ static void bsp_event_handler(bsp_event_t event)
             }
             break; // BSP_EVENT_KEY_0
 
+        case BSP_EVENT_KEY_1:
+            LEDS_INVERT(BSP_LED_1_MASK);
+            err_code = ble_cus_press_update(&m_cus);
+            if (err_code != NRF_ERROR_INVALID_STATE)
+                {
+                    APP_ERROR_CHECK(err_code);
+                }
+        break;
+
         default:
             break;
     }
@@ -780,7 +776,7 @@ static void buttons_leds_init(bool * p_erase_bonds)
     ret_code_t err_code;
     //bsp_event_t startup_event;
 
-    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
+    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_event_handler);
     APP_ERROR_CHECK(err_code);
 
     //err_code = bsp_btn_ble_init(NULL, &startup_event);

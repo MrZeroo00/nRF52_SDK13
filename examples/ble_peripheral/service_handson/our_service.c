@@ -87,6 +87,8 @@ static uint32_t custom_value_char_add(ble_cus_t * p_cus, const ble_cus_init_t * 
     attr_char_value.init_len  = sizeof(uint8_t);
     attr_char_value.init_offs = 0;
     attr_char_value.max_len   = sizeof(uint8_t);
+    uint8_t value             = 0;
+    attr_char_value.p_value   = &value;
 
     err_code = sd_ble_gatts_characteristic_add(p_cus->service_handle, &char_md,
                                                &attr_char_value,
@@ -111,6 +113,7 @@ uint32_t ble_cus_init(ble_cus_t * p_cus, const ble_cus_init_t * p_cus_init)
 
     // Initialize service structure
     p_cus->conn_handle               = BLE_CONN_HANDLE_INVALID;
+    p_cus->click_counter_last        = 1;
     // Add Custom Service UUID
     ble_uuid128_t base_uuid = {CUSTOM_SERVICE_UUID_BASE};
     err_code =  sd_ble_uuid_vs_add(&base_uuid, &p_cus->uuid_type);
@@ -170,5 +173,38 @@ void ble_cus_on_ble_evt(ble_cus_t * p_cus, ble_evt_t * p_ble_evt)
             // No implementation needed.
             break;
     }
+}
+
+uint32_t ble_cus_press_update(ble_cus_t * p_cus)
+{
+    if (p_cus == NULL)
+    {
+        return NRF_ERROR_NULL;
+    }
+
+    uint32_t err_code = NRF_SUCCESS;
+    ble_gatts_value_t gatts_value;
+
+    // Initialize value struct.
+    memset(&gatts_value, 0, sizeof(gatts_value));
+
+    gatts_value.len     = sizeof(uint8_t);
+    gatts_value.offset  = 0;
+    gatts_value.p_value = &(p_cus->click_counter_last);
+
+    // Update database.
+    err_code = sd_ble_gatts_value_set(p_cus->conn_handle,
+                                        p_cus->custom_value_handles.value_handle,
+                                        &gatts_value);
+    if (err_code == NRF_SUCCESS)
+    {
+        // Save new click counter value.
+        p_cus->click_counter_last = p_cus->click_counter_last+1;
+    }
+    else
+    {
+        return err_code;
+    }
+    return err_code;
 }
 
