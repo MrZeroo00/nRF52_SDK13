@@ -35,6 +35,7 @@ SRC_FILES += \
   $(SDK_ROOT)/components/libraries/bsp/bsp_btn_ble.c \
   $(SDK_ROOT)/components/libraries/bsp/bsp_nfc.c \
   $(PROJ_DIR)/main.c \
+  $(PROJ_DIR)/our_service.c \
   $(SDK_ROOT)/external/segger_rtt/RTT_Syscalls_GCC.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT.c \
   $(SDK_ROOT)/external/segger_rtt/SEGGER_RTT_printf.c \
@@ -192,7 +193,7 @@ CFLAGS += -DSOFTDEVICE_PRESENT
 CFLAGS += -DSWI_DISABLE0
 CFLAGS += -mcpu=cortex-m4
 CFLAGS += -mthumb -mabi=aapcs
-CFLAGS +=  -Wall -Werror -O3 -g3
+CFLAGS +=  -Wall -O3 -g3
 CFLAGS += -mfloat-abi=hard -mfpu=fpv4-sp-d16
 # keep every function in separate section, this allows linker to discard unused ones
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
@@ -256,11 +257,24 @@ flash: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
 	nrfjprog --program $< -f nrf52 --sectorerase
 	nrfjprog --reset -f nrf52
 
+# Flash the program BMP
+flash_bmp: $(OUTPUT_DIRECTORY)/nrf52832_xxaa.hex
+	@echo Flashing: $<
+	arm-none-eabi-gdb $< -q -ex 'set confirm off' -ex 'target extended-remote /dev/cu.usbmodem7AB65CA1' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'load' -ex 'kill' -ex 'quit'
+
+# Flash softdevice BMP
+flash_softdevice_bmp:
+	@echo Flashing: s132_nrf52_4.0.2_softdevice.hex
+	arm-none-eabi-gdb $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_4.0.2_softdevice.hex -q -ex 'set confirm off' -ex 'target extended-remote /dev/cu.usbmodem7AB65CA1' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'monitor erase_mass' -ex 'load' -ex 'kill' -ex 'quit'
+
 # Flash softdevice
 flash_softdevice:
 	@echo Flashing: s132_nrf52_4.0.2_softdevice.hex
 	nrfjprog --program $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_4.0.2_softdevice.hex -f nrf52 --sectorerase 
 	nrfjprog --reset -f nrf52
+
+erase_bmp:
+	arm-none-eabi-gdb -q -ex 'set confirm off' -ex 'target extended-remote /dev/cu.usbmodem7AB65CA1' -ex 'monitor swdp_scan' -ex 'attach 1' -ex 'monitor erase_mass' -ex 'kill' -ex 'quit'
 
 erase:
 	nrfjprog --eraseall -f nrf52
