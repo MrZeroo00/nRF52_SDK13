@@ -65,6 +65,7 @@
 #include "ble_advertising.h"
 #include "ble_conn_params.h"
 #include "boards.h"
+#include "bsp.h"
 #include "softdevice_handler.h"
 #include "app_timer.h"
 #include "fstorage.h"
@@ -80,11 +81,13 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
+#include "our_service.h"
+
 
 #define APP_FEATURE_NOT_SUPPORTED       BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2    /**< Reply when unsupported features are requested. */
 
-#define DEVICE_NAME                     "Service_Handson"                       /**< Name of device. Will be included in the advertising data. */
-#define MANUFACTURER_NAME               "Rtone"                   /**< Manufacturer. Will be passed to Device Information Service. */
+#define DEVICE_NAME                     "LOL"                       /**< Name of device. Will be included in the advertising data. */
+#define MANUFACTURER_NAME               "RTO"                   /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                300                                     /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
 
@@ -111,13 +114,16 @@
 static uint16_t       m_conn_handle = BLE_CONN_HANDLE_INVALID;                  /**< Handle of the current connection. */
 static nrf_ble_gatt_t m_gatt;                                                   /**< GATT module instance. */
 
+static ble_cus_t    m_cus;
+
+
 /* YOUR_JOB: Declare all services structure your application is using
    static ble_xx_service_t                     m_xxs;
    static ble_yy_service_t                     m_yys;
  */
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
-static ble_uuid_t m_adv_uuids[] = {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}}; /**< Universally unique service identifiers. */
+ble_uuid_t m_adv_uuids[] = {{CUSTOM_SERVICE_UUID, BLE_UUID_TYPE_VENDOR_BEGIN }}; /**< Universally unique service identifiers. */
 
 static void advertising_start(bool erase_bonds);
 
@@ -238,6 +244,21 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
+/**@brief Function for handling bsp events.
+ */
+static void bsp_evt_handler(bsp_event_t evt)
+{
+    switch (evt)
+    {
+        case BSP_EVENT_KEY_0:
+            LEDS_INVERT(BSP_LED_1_MASK);
+            break;
+
+        default:
+            return; // no implementation needed
+    }
+}
+
 
 /**@brief Function for the Timer initialization.
  *
@@ -334,29 +355,15 @@ static void on_yys_evt(ble_yy_service_t     * p_yy_service,
  */
 static void services_init(void)
 {
-    /* YOUR_JOB: Add code to initialize the services used by the application.
-       ret_code_t                         err_code;
-       ble_xxs_init_t                     xxs_init;
-       ble_yys_init_t                     yys_init;
+    /* YOUR_JOB: Add code to initialize the services used by the application.*/
+    ret_code_t                         err_code;
+    ble_cus_init_t                     cus_init;
 
-       // Initialize XXX Service.
-       memset(&xxs_init, 0, sizeof(xxs_init));
-
-       xxs_init.evt_handler                = NULL;
-       xxs_init.is_xxx_notify_supported    = true;
-       xxs_init.ble_xx_initial_value.level = 100;
-
-       err_code = ble_bas_init(&m_xxs, &xxs_init);
-       APP_ERROR_CHECK(err_code);
-
-       // Initialize YYY Service.
-       memset(&yys_init, 0, sizeof(yys_init));
-       yys_init.evt_handler                  = on_yys_evt;
-       yys_init.ble_yy_initial_value.counter = 0;
-
-       err_code = ble_yy_service_init(&yys_init, &yy_init);
-       APP_ERROR_CHECK(err_code);
-     */
+     // Initialize CUS Service init structure to zero.
+    memset(&cus_init, 0, sizeof(cus_init));
+	
+    err_code = ble_cus_init(&m_cus, &cus_init);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -578,6 +585,7 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
        ble_xxs_on_ble_evt(&m_xxs, p_ble_evt);
        ble_yys_on_ble_evt(&m_yys, p_ble_evt);
      */
+     ble_cus_on_ble_evt(&m_cus, p_ble_evt);
 }
 
 
@@ -623,7 +631,7 @@ static void ble_stack_init(void)
     ble_cfg_t ble_cfg;
 
     memset(&ble_cfg, 0, sizeof(ble_cfg));
-    ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 0;
+    ble_cfg.common_cfg.vs_uuid_cfg.vs_uuid_count = 1;
     err_code = sd_ble_cfg_set(BLE_COMMON_CFG_VS_UUID, &ble_cfg, ram_start);
     APP_ERROR_CHECK(err_code);
 
@@ -770,15 +778,15 @@ static void advertising_init(void)
 static void buttons_leds_init(bool * p_erase_bonds)
 {
     ret_code_t err_code;
-    bsp_event_t startup_event;
+    //bsp_event_t startup_event;
 
-    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_event_handler);
+    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
     APP_ERROR_CHECK(err_code);
 
-    err_code = bsp_btn_ble_init(NULL, &startup_event);
-    APP_ERROR_CHECK(err_code);
+    //err_code = bsp_btn_ble_init(NULL, &startup_event);
+    //APP_ERROR_CHECK(err_code);
 
-    *p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
+    //*p_erase_bonds = (startup_event == BSP_EVENT_CLEAR_BONDING_DATA);
 }
 
 
@@ -831,8 +839,8 @@ int main(void)
     ble_stack_init();
     gap_params_init();
     gatt_init();
-    advertising_init();
     services_init();
+    advertising_init();
     conn_params_init();
     peer_manager_init();
 
