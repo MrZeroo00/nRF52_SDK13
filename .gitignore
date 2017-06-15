@@ -2,4 +2,4 @@
 .DS_Store
 
 # Nordic specific
-**/_build/
+_build/
